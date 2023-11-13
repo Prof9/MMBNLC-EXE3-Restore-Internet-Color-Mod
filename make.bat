@@ -72,6 +72,10 @@ if defined DO_BUILD (
 		1> nul || goto :error
 	copy /Y "init.lua" "!BUILD_DIR_VOL1!\init.lua" ^
 		1> nul || goto :error
+	copy /Y "mod_readme.md" "!BUILD_DIR_VOL1!\README.md" ^
+		1> nul || goto :error
+	copy /Y "license.txt" "!BUILD_DIR_VOL1!\license.txt" ^
+		1> nul || goto :error
 	echo.
 
 	rem Copy miscellaneous files

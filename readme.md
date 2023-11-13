@@ -20,7 +20,7 @@ Windows PC and Steam Deck
 
  1. Download and install chaudloader:
     https://github.com/RockmanEXEZone/chaudloader/releases
-    Version 0.8.1 or newer is required.
+    Version 0.11.0 or newer is required.
 
  2. Launch Steam in Desktop Mode. Right-click the game in Steam, then click
     Properties → Local Files → Browse to open the game's install folder. Then
@@ -33,6 +33,11 @@ Windows PC and Steam Deck
 
 Version History
 ---------------
+
+Ver. 1.1.0 - 13 November 2023
+
+ *  Updated for compatibility with latest game update.
+ *  chaudloader version 0.11.0 or newer is now required.
 
 Ver. 1.0.0 - 26 October 2023
 
