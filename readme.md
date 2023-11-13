@@ -24,7 +24,7 @@ Windows PC and Steam Deck
 
  2. Launch Steam in Desktop Mode. Right-click the game in Steam, then click
     Properties → Local Files → Browse to open the game's install folder. Then
-	open the "exe" folder, where you'll find MMBN_LC2.exe.
+	open the "exe" folder, where you'll find MMBN_LC1.exe.
 
  3. Copy the RestoreInternetColor_EXE3 folder to the "mods" folder.
 
