@@ -20,7 +20,7 @@ bitflags::bitflags! {
 
 #[derive(Copy, Clone, Debug)]
 #[repr(C)]
-pub struct GBAFuncID(u32);
+pub struct GBAFuncID(pub u32);
 
 #[derive(Copy, Clone, Debug)]
 #[repr(C, align(64))]
