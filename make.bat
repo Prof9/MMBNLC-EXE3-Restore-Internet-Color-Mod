@@ -12,7 +12,34 @@ set "BUILD_DIR=_build"
 set "BUILD_DIR_VOL1=!BUILD_DIR!\!MOD_DIR!"
 set "INSTALL_DIR_VOL1=!VOL1_DIR!\exe\mods\!MOD_DIR!"
 
-if /I [%1]==[clean] (
+set "TARGET=%1"
+if /I [%1]==[] (
+	set "TARGET=release"
+)
+
+if /I [!TARGET!]==[clean] (
+	set "DO_CLEAN=1"
+)
+if /I [!TARGET!]==[install] (
+	set "DO_UNINSTALL=1"
+	set "DO_INSTALL=1"
+)
+if /I [!TARGET!]==[uninstall] (
+	set "DO_UNINSTALL=1"
+)
+if /I [!TARGET!]==[debug] (
+	set "DO_BUILD=1"
+	set "CARGO_OPTS="
+	set "TARGET_DIR=debug"
+	set "COPY_PDB=1"
+)
+if /I [!TARGET!]==[release] (
+	set "DO_BUILD=1"
+	set "CARGO_OPTS=--release"
+	set "TARGET_DIR=release"
+)
+
+if defined DO_CLEAN (
 	echo Running cargo clean...
 	cargo clean ^
 		1> nul || goto :error
@@ -22,11 +49,48 @@ if /I [%1]==[clean] (
 			1> nul || goto :error
 	)
 	echo.
-
-	goto :done
 )
+if defined DO_BUILD (
+	rem Build mod
+	echo Building for Volume 1...
 
-if /I [%1]==[install] (
+	rem Clean build folder
+	call :clean_folder "!BUILD_DIR_VOL1!"
+
+	echo Running cargo build...
+	cargo build !CARGO_OPTS! ^
+		1> nul || goto :error
+
+	echo Copying mod files...
+	copy "target\!TARGET_DIR!\patch.dll" "!BUILD_DIR_VOL1!" ^
+		1> nul || goto :error
+	if defined COPY_PDB (
+		copy "target\!TARGET_DIR!\patch.*" "!BUILD_DIR_VOL1!" ^
+			1> nul || goto :error
+	)
+	copy /Y "info.toml" "!BUILD_DIR_VOL1!\info.toml" ^
+		1> nul || goto :error
+	copy /Y "init.lua" "!BUILD_DIR_VOL1!\init.lua" ^
+		1> nul || goto :error
+	echo.
+
+	rem Copy miscellaneous files
+	copy /Y "readme.md" "!BUILD_DIR!\readme.txt" ^
+		1> nul || goto :error
+)
+if defined DO_UNINSTALL (
+	if exist "!VOL1_DIR!" (
+		echo Uninstalling for Volume 1...
+		if exist "!INSTALL_DIR_VOL1!" (
+			rmdir /S /Q "!INSTALL_DIR_VOL1!" ^
+				1> nul || goto :error
+		)
+	) else (
+		echo Volume 1 not installed; skipping...
+	)
+	echo.
+)
+if defined DO_INSTALL (
 	if exist "!VOL1_DIR!" (
 		if exist "!BUILD_DIR_VOL1!" (
 			echo Installing for Volume 1...
@@ -46,47 +110,7 @@ if /I [%1]==[install] (
 		echo Volume 1 not installed; skipping...
 	)
 	echo.
-
-	goto :done
 )
-
-if /I [%1]==[uninstall] (
-	if exist "!VOL1_DIR!" (
-		echo Uninstalling for Volume 1...
-		if exist "!INSTALL_DIR_VOL1!" (
-			rmdir /S /Q "!INSTALL_DIR_VOL1!" ^
-				1> nul || goto :error
-		)
-	) else (
-		echo Volume 1 not installed; skipping...
-	)
-	echo.
-
-	goto :done
-)
-
-rem Build mod
-echo Building for Volume 1...
-
-rem Clean build folder
-call :clean_folder "!BUILD_DIR_VOL1!"
-
-echo Running cargo build...
-cargo build --release ^
-	1> nul || goto :error
-
-echo Copying mod files...
-copy "target\release\patch.dll" "!BUILD_DIR_VOL1!" ^
-	1> nul || goto :error
-copy /Y "info.toml" "!BUILD_DIR_VOL1!\info.toml" ^
-	1> nul || goto :error
-copy /Y "init.lua" "!BUILD_DIR_VOL1!\init.lua" ^
-	1> nul || goto :error
-echo.
-
-rem Copy miscellaneous files
-copy /Y "readme.md" "!BUILD_DIR!\readme.txt" ^
-	1> nul || goto :error
 
 :done
 echo Done.
