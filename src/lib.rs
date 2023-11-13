@@ -46,7 +46,7 @@ fn patch(lua: &Lua) -> LuaResult<LuaValue> {
     EXE3_SceFlagTest2
         .set(unsafe { std::mem::transmute(ptrs_sce_flag_test2.unwrap()[0]) })
         .unwrap();
-    println!("Found EXE3_SceFlagTest2 @ {:#X}", EXE3_SceFlagTest2.get().unwrap() as *const GBAFunc as usize);
+    println!("Found EXE3_SceFlagTest2 @ {:#X}", *EXE3_SceFlagTest2.get().unwrap() as usize);
 
     // Find EXE3_St90ScrChgCheck
     println!("Searching for EXE3_St90ScrChgCheck...");
